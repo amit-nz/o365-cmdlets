@@ -18,7 +18,7 @@ Get-PnPRecycleBinItem | Select Title, ItemType, Size, ItemState, DirName, Delete
 Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | Select Title, ItemType, Size, ItemState, DirName, DeletedByName, DeletedDate | Export-Csv -Path FileList-Yesterday-deletedby-Johnny.csv
 
 # To bulk restore all items in there now (careful!), no confirmation due to -Force
-Get-PnPRecycleBinItem | Restore-PnpRecycleBinItem -Force
+Get-PnPRecycleBinItem | ForEach-Object { Restore-PnPRecycleBinItem  -Force }
 
 # Example 2 (only restore items deleted by Johnny, yesterday.
 Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | ForEach-Object { Restore-PnPRecycleBinItem  -Force }
