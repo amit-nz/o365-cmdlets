@@ -17,8 +17,8 @@ Get-PnPRecycleBinItem | Select Title, ItemType, Size, ItemState, DirName, Delete
 # Example 3 - As above but only stuff that was deleted yesterday and onl a specific user. Note time zone in UTC here.
 Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | Select Title, ItemType, Size, ItemState, DirName, DeletedByName, DeletedDate | Export-Csv -Path FileList-Yesterday-deletedby-Johnny.csv
 
-# To bulk restore all items in there now (careful!)
+# To bulk restore all items in there now (careful!), no confirmation due to -Force
 Get-PnPRecycleBinItem | Restore-PnpRecycleBinItem -Force
 
 # Example 2 (only restore items deleted by Johnny, yesterday.
-Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | Restore-PnpRecycleBinItem -Force
+Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | ForEach-Object { Restore-PnPRecycleBinItem  -Force }
