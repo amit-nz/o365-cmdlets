@@ -2,11 +2,11 @@
 # First, install PnP.Powershell as per https://pnp.github.io/powershell/articles/installation.html
 
 # Register a new app because the previous method of simply authenticating the old fashonied way is too easy. Make a note of the AzureAppId/ClientId that the system spits out. 
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP" -Tenant meridianconstructionltd.onmicrosoft.com -Interactive
 # If you have done this in the past already, go to https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM
 # and click "View all applications in directory", then find "PnP" or whatever you called it, look for Application (client) ID
-Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP" -Tenant meridianconstructionltd.onmicrosoft.com -Interactive
 
-# Connect to the sharepoint lib (replace URL + client ID)
+# Once you have the client ID, connect to the sharepoint lib (replace URL + client ID):
 Connect-PnPOnline -Url "https://myorg-com-my.sharepoint.com/personal/amit" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
 Connect-PnPOnline -Url "https://myorg.sharepoint.com/sites/AwesomeSharedLocation" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
 
