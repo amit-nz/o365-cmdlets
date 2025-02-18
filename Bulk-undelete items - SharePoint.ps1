@@ -7,8 +7,8 @@
 Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP" -Tenant meridianconstructionltd.onmicrosoft.com -Interactive
 
 # Connect to the sharepoint lib (replace URL + client ID)
-Connect-PnPOnline -Url "https://focis-co-nz-my.sharepoint.com/personal/amit" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
-Connect-PnPOnline -Url "https://focis.sharepoint.com/sites/AwesomeSharedLocation" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
+Connect-PnPOnline -Url "https://myorg-com-my.sharepoint.com/personal/amit" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
+Connect-PnPOnline -Url "https://myorg.sharepoint.com/sites/AwesomeSharedLocation" -Interactive -ClientID "111111-111-111-1111-aaaaaaaa"
 
 # Example 1 - List items in recycle bin -- useful to verify if deleted items are there and to get the filter scoping right
 Get-PnPRecycleBinItem -RowLimit 50 | Select Title, ItemType, Size, ItemState, DirName, DeletedByName, DeletedDate | Format-table -AutoSize
@@ -22,3 +22,15 @@ Get-PnPRecycleBinItem | Restore-PnpRecycleBinItem -Force
 
 # Example 2 (only restore items deleted by Johnny, yesterday.
 Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | ForEach-Object { Restore-PnPRecycleBinItem  -Force }
+
+# Example 3 - slightly more complicated. Yesterday, Johnny accidentally moved a folder (dragged and dropped a pinned item in explorer to another folder)
+# The move operation was interrupted however some files had been deleted at the source; yet they are reported by Get-PnPRecycleBinItem
+# The loop checks if the item exists at the destination; if it does, it will not restore. If it does not, it will restore the file.
+Get-PnPRecycleBinItem | Where-Object { ($_.DeletedDate).Date -eq (Get-Date).AddDays(-1).Date -and $_.DeletedByName -eq "Johnny Boy" } | ForEach-Object {
+        $path = "/$($_.DirName)/$($_.LeafName)"
+    Get-PnPFile -Url $path
+    $fileExists = Get-PnPFile -url $path -ErrorAction SilentlyContinue
+    if (!$fileExists) {
+        $_ | Restore-PnpRecycleBinItem -Force -ErrorAction SilentlyContinue
+    }
+}
