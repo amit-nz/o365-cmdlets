@@ -66,7 +66,7 @@ Set-MailboxAutoReplyConfiguration -Identity "john.s@contoso.com" -AutoReplyState
 
 ### Exit gracefully #########################################################################################################################################################################
 # Disconnect from Exchange Online Powershell using
-Remove-PSSession $Session
+Disconnect-ExchangeOnline -Confirm:$false
 
 # Disconnect graph session
 Disconnect-MgGraph
