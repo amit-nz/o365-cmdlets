@@ -13,3 +13,12 @@ Start-ManagedFolderAssistant -Identity user@domain.com
 
 # Check message count in the archive mailbox
 Get-MailboxStatistics -Identity user@domain.com  -archive | Select DisplayName, TotalItemSize, ItemCount
+
+# Check if auto-expanding archive is enabled on a user's mailbox:
+Get-Mailbox -Identity user@domain.com | FL AutoExpandingArchiveEnabled
+
+# If it is not, then enable auto-expanding archive:
+Enable-Mailbox -Identity user@domain.com -AutoExpandingArchive
+
+# Disconnect when done (Note this clears all open sessions!
+Disconnect-ExchangeOnline
