@@ -14,3 +14,11 @@ Get-MSCommerceProductPolicies -PolicyId AllowSelfServicePurchase |
         Write-Host "Disabling: $($_.ProductName) ($($_.ProductId))"
         Update-MSCommerceProductPolicy -PolicyId AllowSelfServicePurchase -ProductId $_.ProductId -Enabled $false
     }
+
+# Or, enable everything
+Get-MSCommerceProductPolicies -PolicyId AllowSelfServicePurchase |
+    Where-Object { $_.PolicyValue -eq 'Disabled' } |
+    ForEach-Object {
+        Write-Host "Enabling: $($_.ProductName) ($($_.ProductId))"
+        Update-MSCommerceProductPolicy -PolicyId AllowSelfServicePurchase -ProductId $_.ProductId -Enabled $true
+    }
